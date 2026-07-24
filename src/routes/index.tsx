@@ -21,7 +21,7 @@ import heroImg from "@/assets/hero.jpg";
 import whaleImg from "@/assets/whale.jpg";
 import bioImg from "@/assets/bioluminescent.jpg";
 import wreckImg from "@/assets/wreck.jpg";
-import submarineAsset from "@/assets/submarine.png.asset.json";
+import explorerX1 from "@/assets/explorer-x1.png";
 import interiorAsset from "@/assets/interior.png.asset.json";
 import ctaAsset from "@/assets/cta.png.asset.json";
 import yachtAsset from "@/assets/yacht.png.asset.json";
@@ -414,10 +414,9 @@ function Technology() {
         </div>
 
         <div className="relative">
-          <img
-            src={submarineAsset.url}
+          <img src={explorerX1}
             alt="Abyss Explorer X1 submersible"
-            className="mx-auto w-full max-w-4xl transition-transform duration-500 ease-out"
+            className="w-full h-[70vh] object-cover transition-transform duration-500 ease-out"
             style={{ transform: `perspective(1500px) rotateY(${rot}deg) translateY(${y}px)` }}
             loading="lazy"
           />
