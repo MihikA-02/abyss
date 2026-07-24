@@ -161,7 +161,7 @@ function Nav() {
 /* ── 1. MYSTERY ────────────────────────────────────────────── */
 function Mystery() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black">
+    <section id="mystery" className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black">
       <Particles count={30} />
       <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
         <p className="mb-8 text-[10px] uppercase tracking-[0.6em] text-primary/60">Chapter I — Mystery</p>
@@ -268,160 +268,160 @@ function Hero() {
   // Auto-play reel once mounted
   useEffect(() => {
     if (reelOpen && reelRef.current) {
-      reelRef.current.play().catch(() => {/* autoplay blocked */});
+      reelRef.current.play().catch(() => {/* autoplay blocked */ });
     }
   }, [reelOpen]);
 
   return (
     <>
-    <section ref={heroRef} data-section="hero" className="relative flex min-h-[110vh] items-end overflow-hidden">
-      <video
-        ref={videoRef}
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 h-full w-full object-cover"
-        style={{
-          transform: `translateY(${scrollY * 0.15}px) scale(1.05)`,
-          filter: "brightness(1.35) contrast(1.1) saturate(1.25)"
-        }}
-      >
-        <source src="/videos/hero.mp4" type="video/mp4" />
-      </video>
+      <section ref={heroRef} data-section="hero" className="relative flex min-h-[110vh] items-end overflow-hidden">
+        <video
+          ref={videoRef}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 h-full w-full object-cover"
+          style={{
+            transform: `translateY(${scrollY * 0.15}px) scale(1.05)`,
+            filter: "brightness(1.35) contrast(1.1) saturate(1.25)"
+          }}
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
 
-      {/* Dark overlay for transition */}
-      <div ref={darkOverlayRef} className="absolute inset-0 bg-black/0 pointer-events-none z-10" />
+        {/* Dark overlay for transition */}
+        <div ref={darkOverlayRef} className="absolute inset-0 bg-black/0 pointer-events-none z-10" />
 
-      {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-abyss/100" />
+        {/* Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-abyss/100" />
 
-      <Bubbles count={38} />
+        <Bubbles count={38} />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1500px] flex-col gap-8 px-6 pb-24 md:px-10">
-        <p className="text-[10px] uppercase tracking-[0.6em] text-accent">Chapter II — Discovery</p>
-        <h1 className="font-display text-[19vw] leading-[0.85] tracking-[0.06em] text-heading md:text-[16rem]">
-          ABYSS
-        </h1>
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
-          <p className="max-w-md text-sm uppercase tracking-[0.3em] text-body">
-            The deepest luxury<br />
-            expedition ever engineered<br />
-            for private travellers.
-          </p>
-          <div className="flex flex-wrap items-center gap-6">
-            <a
-              href="#exploration"
-              className="btn-outline-glow group flex items-center gap-4 rounded-full px-8 py-4 text-[10px] uppercase tracking-[0.35em]"
-            >
-              Begin The Descent
-              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-            </a>
-            <button
-              id="watch-reel-btn"
-              onClick={openReel}
-              className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-body hover:text-primary"
-            >
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 transition-colors group-hover:border-primary group-hover:bg-primary/10">
-                <Play className="h-3 w-3 fill-current" />
-              </span>
-              Watch Reel
-            </button>
+        <div className="relative z-10 mx-auto flex w-full max-w-[1500px] flex-col gap-8 px-6 pb-24 md:px-10">
+          <p className="text-[10px] uppercase tracking-[0.6em] text-accent">Chapter II — Discovery</p>
+          <h1 className="font-display text-[19vw] leading-[0.85] tracking-[0.06em] text-heading md:text-[16rem]">
+            ABYSS
+          </h1>
+          <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-end">
+            <p className="max-w-md text-sm uppercase tracking-[0.3em] text-body">
+              The deepest luxury<br />
+              expedition ever engineered<br />
+              for private travellers.
+            </p>
+            <div className="flex flex-wrap items-center gap-6">
+              <a
+                href="#exploration"
+                className="btn-outline-glow group flex items-center gap-4 rounded-full px-8 py-4 text-[10px] uppercase tracking-[0.35em]"
+              >
+                Begin The Descent
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+              </a>
+              <button
+                id="watch-reel-btn"
+                onClick={openReel}
+                className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-body hover:text-primary"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 transition-colors group-hover:border-primary group-hover:bg-primary/10">
+                  <Play className="h-3 w-3 fill-current" />
+                </span>
+                Watch Reel
+              </button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    {/* ── Reel Modal ─────────────────────────────────────────── */}
-    {reelOpen && (
-      <div
-        ref={modalRef}
-        id="reel-modal"
-        onClick={(e) => { if (e.target === modalRef.current) closeReel(); }}
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 9999,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: reelVisible ? "rgba(0,0,0,0.90)" : "rgba(0,0,0,0)",
-          backdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
-          WebkitBackdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
-          transition: "background-color 300ms ease, backdrop-filter 300ms ease",
-        }}
-      >
-        {/* Close button */}
-        <button
-          id="reel-close-btn"
-          onClick={closeReel}
-          aria-label="Close reel"
+      {/* ── Reel Modal ─────────────────────────────────────────── */}
+      {reelOpen && (
+        <div
+          ref={modalRef}
+          id="reel-modal"
+          onClick={(e) => { if (e.target === modalRef.current) closeReel(); }}
           style={{
-            position: "absolute",
-            top: "20px",
-            right: "24px",
-            zIndex: 10001,
+            position: "fixed",
+            inset: 0,
+            zIndex: 9999,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            width: "44px",
-            height: "44px",
-            borderRadius: "50%",
-            border: "1px solid rgba(100,210,230,0.45)",
-            background: "rgba(0,0,0,0.6)",
-            color: "rgba(100,210,230,0.9)",
-            fontSize: "20px",
-            lineHeight: 1,
-            cursor: "pointer",
-            boxShadow: "0 0 16px rgba(80,200,220,0.25)",
-            transition: "border-color 200ms, box-shadow 200ms, color 200ms",
-          }}
-          onMouseEnter={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.9)";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 28px rgba(80,200,220,0.55)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#fff";
-          }}
-          onMouseLeave={e => {
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.45)";
-            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 16px rgba(80,200,220,0.25)";
-            (e.currentTarget as HTMLButtonElement).style.color = "rgba(100,210,230,0.9)";
+            backgroundColor: reelVisible ? "rgba(0,0,0,0.90)" : "rgba(0,0,0,0)",
+            backdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
+            WebkitBackdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
+            transition: "background-color 300ms ease, backdrop-filter 300ms ease",
           }}
         >
-          ×
-        </button>
-
-        {/* Video wrapper */}
-        <div
-          style={{
-            transform: reelVisible ? "scale(1)" : "scale(0.95)",
-            opacity: reelVisible ? 1 : 0,
-            transition: "transform 350ms cubic-bezier(0.22,1,0.36,1), opacity 300ms ease",
-            position: "relative",
-            borderRadius: "18px",
-            border: "1px solid rgba(80,200,220,0.35)",
-            boxShadow: "0 0 60px rgba(60,180,210,0.20), 0 0 0 1px rgba(80,200,220,0.12)",
-            overflow: "hidden",
-            lineHeight: 0,
-          }}
-        >
-          <video
-            ref={reelRef}
-            id="reel-video"
-            controls
-            playsInline
+          {/* Close button */}
+          <button
+            id="reel-close-btn"
+            onClick={closeReel}
+            aria-label="Close reel"
             style={{
-              display: "block",
-              maxWidth: "95vw",
-              maxHeight: "95vh",
-              objectFit: "contain",
-              borderRadius: "17px",
+              position: "absolute",
+              top: "20px",
+              right: "24px",
+              zIndex: 10001,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "44px",
+              height: "44px",
+              borderRadius: "50%",
+              border: "1px solid rgba(100,210,230,0.45)",
+              background: "rgba(0,0,0,0.6)",
+              color: "rgba(100,210,230,0.9)",
+              fontSize: "20px",
+              lineHeight: 1,
+              cursor: "pointer",
+              boxShadow: "0 0 16px rgba(80,200,220,0.25)",
+              transition: "border-color 200ms, box-shadow 200ms, color 200ms",
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.9)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 28px rgba(80,200,220,0.55)";
+              (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.45)";
+              (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 16px rgba(80,200,220,0.25)";
+              (e.currentTarget as HTMLButtonElement).style.color = "rgba(100,210,230,0.9)";
             }}
           >
-            <source src={reelVideo} type="video/mp4" />
-          </video>
+            ×
+          </button>
+
+          {/* Video wrapper */}
+          <div
+            style={{
+              transform: reelVisible ? "scale(1)" : "scale(0.95)",
+              opacity: reelVisible ? 1 : 0,
+              transition: "transform 350ms cubic-bezier(0.22,1,0.36,1), opacity 300ms ease",
+              position: "relative",
+              borderRadius: "18px",
+              border: "1px solid rgba(80,200,220,0.35)",
+              boxShadow: "0 0 60px rgba(60,180,210,0.20), 0 0 0 1px rgba(80,200,220,0.12)",
+              overflow: "hidden",
+              lineHeight: 0,
+            }}
+          >
+            <video
+              ref={reelRef}
+              id="reel-video"
+              controls
+              playsInline
+              style={{
+                display: "block",
+                maxWidth: "95vw",
+                maxHeight: "95vh",
+                objectFit: "contain",
+                borderRadius: "17px",
+              }}
+            >
+              <source src={reelVideo} type="video/mp4" />
+            </video>
+          </div>
         </div>
-      </div>
-    )}
+      )}
     </>
   );
 }
@@ -437,6 +437,7 @@ function Discovery() {
   const ref = useReveal<HTMLDivElement>();
   return (
     <section
+      id="discovery"
       className="relative overflow-hidden py-40"
       style={{
         background:
@@ -839,15 +840,15 @@ function Gallery() {
   const ref = useReveal<HTMLDivElement>();
 
   const portraits = [
-    { src: long1Img,  tag: "Bioluminescent Cascade · 900 m",  side: "left"  },
-    { src: long2Img,  tag: "Midnight Trench Wall · 4200 m",   side: "right" },
+    { src: long1Img, tag: "Bioluminescent Cascade · 900 m", side: "left" },
+    { src: long2Img, tag: "Midnight Trench Wall · 4200 m", side: "right" },
   ];
 
   const center = [
-    { src: gallery1Img, tag: "Reef Threshold · 30 m"        },
-    { src: gallery2Img, tag: "Humpback Passage · 60 m"       },
-    { src: gallery3Img, tag: "SS Meridian · 1240 m"          },
-    { src: gallery4Img, tag: "Trench Approach · 6100 m"      },
+    { src: gallery1Img, tag: "Reef Threshold · 30 m" },
+    { src: gallery2Img, tag: "Humpback Passage · 60 m" },
+    { src: gallery3Img, tag: "SS Meridian · 1240 m" },
+    { src: gallery4Img, tag: "Trench Approach · 6100 m" },
   ];
 
   return (
@@ -985,6 +986,10 @@ function Testimonial() {
         muted
         loop
         playsInline
+        style={{
+          maskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, black 5%, black 95%, transparent 100%)"
+        }}
       >
         <source src={jellyfishVid} type="video/mp4" />
       </video>
@@ -1011,11 +1016,11 @@ function Testimonial() {
 /* ── 9. FAQ ────────────────────────────────────────────────── */
 function FAQ() {
   const items = [
-    { q: "Do I need diving experience?", a: "None. Guests remain in the pressurised cabin of the Explorer X1 while trained pilots operate the vessel." },
+    { q: "Do I need diving experience?", a: "Not at all. Every expedition is designed for both first-time explorers and seasoned adventurers." },
     { q: "How long is a full expedition?", a: "Signature expeditions run three to five days, including surface acclimatisation, briefings, and dive sequences." },
-    { q: "What departure ports do you operate from?", a: "Currently Ísafjörður, Ponta Delgada, Papeete and a private Mariana Trench access point (invitation only)." },
-    { q: "Is a private charter available?", a: "Yes. The Explorer X1 and her expedition crew can be reserved exclusively for a party of up to six guests." },
-    { q: "What is the safety protocol?", a: "Every dive is monitored by a redundant surface team. Life support autonomy is 96 hours, four times the maximum dive length." },
+    { q: "What departure ports do you operate from?", a: "Our expeditions depart from Hobart's private marina facilities, with exact boarding details shared exclusively after your expedition has been confirmed." },
+    { q: "Is a private charter available?", a: "Yes. Reserve Explorer X1 exclusively for an intimate expedition with your chosen guests." },
+    { q: "What is the safety protocol?", a: "Every voyage is supported by certified crew, advanced navigation systems, and comprehensive safety procedures." },
   ];
   const [open, setOpen] = useState<number | null>(0);
   const ref = useReveal<HTMLDivElement>();
@@ -1070,7 +1075,7 @@ function Booking() {
   const [sent, setSent] = useState(false);
   return (
     <section id="book" className="relative min-h-screen overflow-hidden">
-      <img src={ctaAsset.url} alt="Deep-sea canyon with the Explorer X1 preparing for descent" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+
       <div className="absolute inset-0 bg-gradient-to-b from-abyss/60 via-abyss/30 to-abyss" />
       <Bubbles count={26} />
 
@@ -1164,34 +1169,100 @@ function Select({ label, name, options }: { label: string; name: string; options
 
 /* ── Footer ────────────────────────────────────────────────── */
 function SiteFooter() {
+  const handleScrollToTop = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="relative border-t border-primary/15 bg-abyss px-6 py-14 text-[10px] uppercase tracking-[0.3em] text-foreground/50 md:px-10">
       <div className="mx-auto max-w-[1500px]">
         <div className="grid gap-10 md:grid-cols-4">
           <div>
-            <p className="font-display text-lg tracking-[0.6em] text-primary">A B Y S S</p>
+            <a
+              href="#top"
+              onClick={handleScrollToTop}
+              className="group inline-block font-display text-lg tracking-[0.6em] text-primary transition-colors hover:text-cyan-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:ring-offset-abyss"
+              aria-label="Scroll to top"
+            >
+              A B Y S S
+            </a>
             <p className="mt-4 normal-case tracking-normal text-foreground/50">
               Private expeditions into the world's least-known frontier.
             </p>
           </div>
-          <FooterCol title="Voyage" items={["Expeditions", "Vessel", "Science", "Journal"]} />
-          <FooterCol title="Company" items={["About", "Crew", "Conservation", "Press"]} />
-          <FooterCol title="Contact" items={["Ísafjörður", "Ponta Delgada", "Papeete", "concierge@abyss.co"]} />
+          <FooterCol
+            title="VOYAGE"
+            items={[
+              { label: "Expeditions", href: "#exploration" },
+              { label: "Vessel", href: "#technology" },
+              { label: "Science", href: "#discovery" },
+              { label: "Journal", href: "#gallery" }
+            ]}
+          />
+          <FooterCol
+            title="DISCOVER"
+            items={[
+              { label: "The Mission", href: "#mystery" },
+              { label: "Our Crew", href: "#mystery" },
+              { label: "Ocean Research", href: "#discovery" },
+              { label: "Partners", href: "#book" }
+            ]}
+          />
+          <FooterCol
+            title="CONTACT"
+            items={[
+              { label: "Hobart, Australia", href: "https://maps.google.com/?q=Hobart,Australia" },
+              { label: "Schedule an Expedition", href: "#book" },
+              { label: "+1 (800) 555-ABYS", href: "tel:+18005552297" },
+              { label: "concierge@abyss.co", href: "mailto:concierge@abyss.co" }
+            ]}
+          />
         </div>
         <div className="mt-14 flex flex-col items-start justify-between gap-4 border-t border-primary/15 pt-8 md:flex-row md:items-center">
           <span>© {new Date().getFullYear()} ABYSS Expeditions</span>
-          <div className="flex gap-6"><a href="#" className="hover:text-primary">Privacy</a><a href="#" className="hover:text-primary">Terms</a><a href="#" className="hover:text-primary">Cookies</a></div>
+          <div className="flex gap-6">
+            <a href="#" className="transition-all hover:text-primary hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] focus-visible:text-primary focus-visible:outline-none">Privacy</a>
+            <a href="#" className="transition-all hover:text-primary hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] focus-visible:text-primary focus-visible:outline-none">Terms</a>
+            <a href="#" className="transition-all hover:text-primary hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)] focus-visible:text-primary focus-visible:outline-none">Cookies</a>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
-function FooterCol({ title, items }: { title: string; items: string[] }) {
+
+function FooterCol({ title, items }: { title: string; items: { label: string; href: string }[] }) {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) {
+        const y = el.getBoundingClientRect().top + window.scrollY - 80; // offset for fixed navbar
+        window.scrollTo({ top: y, behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <div>
       <p className="text-primary/70">{title}</p>
-      <ul className="mt-4 space-y-2 normal-case tracking-normal text-foreground/70">
-        {items.map((i) => <li key={i}><a href="#" className="hover:text-primary">{i}</a></li>)}
+      <ul className="mt-4 space-y-3 normal-case tracking-normal text-foreground/70">
+        {items.map((i) => (
+          <li key={i.label}>
+            <a
+              href={i.href}
+              onClick={(e) => handleClick(e, i.href)}
+              target={i.href.startsWith("http") ? "_blank" : undefined}
+              rel={i.href.startsWith("http") ? "noopener noreferrer" : undefined}
+              className="group relative inline-flex cursor-pointer items-center transition-colors duration-300 hover:text-cyan-300 focus-visible:text-cyan-300 focus-visible:outline-none"
+            >
+              {i.label}
+              {/* Subtle underline glow on hover */}
+              <span className="absolute -bottom-1 left-0 h-[1px] w-0 bg-cyan-400 opacity-50 shadow-[0_0_8px_rgba(34,211,238,0.8)] transition-all duration-300 group-hover:w-full group-focus-visible:w-full" />
+            </a>
+          </li>
+        ))}
       </ul>
     </div>
   );
