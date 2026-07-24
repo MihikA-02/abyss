@@ -17,6 +17,7 @@ import { Particles } from "@/components/Particles";
 import { CountUp } from "@/components/CountUp";
 import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
 import jellyfishVid from "@/assets/jellyfish.mp4";
+import reelVideo from "@/assets/reel.mov";
 import heroImg from "@/assets/hero.jpg";
 import whaleVid from "@/assets/whale.mp4";
 import bioImg from "@/assets/bioluminescent.jpg";
@@ -25,6 +26,12 @@ import explorerX1 from "@/assets/explorer-x1.png";
 import interiorAsset from "@/assets/interior.png.asset.json";
 import ctaAsset from "@/assets/cta.png.asset.json";
 import yachtAsset from "@/assets/yacht.png.asset.json";
+import gallery1Img from "@/assets/gallery1.jpeg";
+import gallery2Img from "@/assets/gallery2.jpeg";
+import gallery3Img from "@/assets/gallery3.jpeg";
+import gallery4Img from "@/assets/gallery4.jpeg";
+import long1Img from "@/assets/long1.jpeg";
+import long2Img from "@/assets/long2.jpeg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -175,10 +182,14 @@ function Mystery() {
 /* ── 2. HERO ───────────────────────────────────────────────── */
 function Hero() {
   const [scrollY, setScrollY] = useState(0);
+  const [reelOpen, setReelOpen] = useState(false);
+  const [reelVisible, setReelVisible] = useState(false); // drives CSS transition
   const heroRef = useRef<HTMLElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const darkOverlayRef = useRef<HTMLDivElement>(null);
   const raysRef = useRef<HTMLDivElement>(null);
+  const reelRef = useRef<HTMLVideoElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const on = () => setScrollY(window.scrollY);
@@ -199,37 +210,70 @@ function Hero() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: heroRef.current,
-        start: "top bottom", // Starts when top of Hero hits bottom of viewport
-        end: "top top",      // Ends when top of Hero hits top of viewport
-        scrub: 0.5,          // Smooth scrubbing with a slight lag for cinematic feel
-        once: true           // Lock the final bright state once completed
+        start: "top bottom",
+        end: "top top",
+        scrub: 0.5,
+        once: true
       }
     });
 
-    // Fade out the dark overlay
-    tl.to(darkOverlayRef.current, {
-      opacity: 0,
-      ease: "none" // Linear ease is best for scrubbed animations
-    }, 0);
-
-    // Animate video color grading
+    tl.to(darkOverlayRef.current, { opacity: 0, ease: "none" }, 0);
     tl.to(videoRef.current, {
       filter: "brightness(1.65) contrast(1.1) saturate(1.5) hue-rotate(-8deg)",
       ease: "none"
     }, 0);
-
-    // Fade in light rays with a slight delay in the timeline progression
-    tl.to(raysRef.current, {
-      opacity: 0.35,
-      ease: "none"
-    }, 0.2);
+    tl.to(raysRef.current, { opacity: 0.35, ease: "none" }, 0.2);
 
     return () => {
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, []);
 
+  /* ── Reel modal open/close ── */
+  const openReel = () => {
+    setReelOpen(true);
+    // Lock scroll
+    document.body.style.overflow = "hidden";
+    // Pause background hero video
+    videoRef.current?.pause();
+    // Trigger entrance transition on next frame
+    requestAnimationFrame(() => requestAnimationFrame(() => setReelVisible(true)));
+  };
+
+  const closeReel = () => {
+    setReelVisible(false);
+    // Wait for fade-out transition before unmounting
+    setTimeout(() => {
+      setReelOpen(false);
+      // Pause & reset reel
+      if (reelRef.current) {
+        reelRef.current.pause();
+        reelRef.current.currentTime = 0;
+      }
+      // Restore scroll
+      document.body.style.overflow = "";
+      // Resume background video
+      videoRef.current?.play();
+    }, 350);
+  };
+
+  // Esc key closes modal
+  useEffect(() => {
+    if (!reelOpen) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") closeReel(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [reelOpen]);
+
+  // Auto-play reel once mounted
+  useEffect(() => {
+    if (reelOpen && reelRef.current) {
+      reelRef.current.play().catch(() => {/* autoplay blocked */});
+    }
+  }, [reelOpen]);
+
   return (
+    <>
     <section ref={heroRef} data-section="hero" className="relative flex min-h-[110vh] items-end overflow-hidden">
       <video
         ref={videoRef}
@@ -249,9 +293,8 @@ function Hero() {
       {/* Dark overlay for transition */}
       <div ref={darkOverlayRef} className="absolute inset-0 bg-black/0 pointer-events-none z-10" />
 
-      {/* Transparent top — the video breathes fully. Thin vignette only at the very bottom for text contrast. */}
+      {/* Vignette */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-abyss/100" />
-
 
       <Bubbles count={38} />
 
@@ -274,7 +317,11 @@ function Hero() {
               Begin The Descent
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
             </a>
-            <button className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-body hover:text-primary">
+            <button
+              id="watch-reel-btn"
+              onClick={openReel}
+              className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.35em] text-body hover:text-primary"
+            >
               <span className="flex h-11 w-11 items-center justify-center rounded-full border border-primary/50 transition-colors group-hover:border-primary group-hover:bg-primary/10">
                 <Play className="h-3 w-3 fill-current" />
               </span>
@@ -284,6 +331,98 @@ function Hero() {
         </div>
       </div>
     </section>
+
+    {/* ── Reel Modal ─────────────────────────────────────────── */}
+    {reelOpen && (
+      <div
+        ref={modalRef}
+        id="reel-modal"
+        onClick={(e) => { if (e.target === modalRef.current) closeReel(); }}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: reelVisible ? "rgba(0,0,0,0.90)" : "rgba(0,0,0,0)",
+          backdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
+          WebkitBackdropFilter: reelVisible ? "blur(12px)" : "blur(0px)",
+          transition: "background-color 300ms ease, backdrop-filter 300ms ease",
+        }}
+      >
+        {/* Close button */}
+        <button
+          id="reel-close-btn"
+          onClick={closeReel}
+          aria-label="Close reel"
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "24px",
+            zIndex: 10001,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "44px",
+            height: "44px",
+            borderRadius: "50%",
+            border: "1px solid rgba(100,210,230,0.45)",
+            background: "rgba(0,0,0,0.6)",
+            color: "rgba(100,210,230,0.9)",
+            fontSize: "20px",
+            lineHeight: 1,
+            cursor: "pointer",
+            boxShadow: "0 0 16px rgba(80,200,220,0.25)",
+            transition: "border-color 200ms, box-shadow 200ms, color 200ms",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.9)";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 28px rgba(80,200,220,0.55)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#fff";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(100,210,230,0.45)";
+            (e.currentTarget as HTMLButtonElement).style.boxShadow = "0 0 16px rgba(80,200,220,0.25)";
+            (e.currentTarget as HTMLButtonElement).style.color = "rgba(100,210,230,0.9)";
+          }}
+        >
+          ×
+        </button>
+
+        {/* Video wrapper */}
+        <div
+          style={{
+            transform: reelVisible ? "scale(1)" : "scale(0.95)",
+            opacity: reelVisible ? 1 : 0,
+            transition: "transform 350ms cubic-bezier(0.22,1,0.36,1), opacity 300ms ease",
+            position: "relative",
+            borderRadius: "18px",
+            border: "1px solid rgba(80,200,220,0.35)",
+            boxShadow: "0 0 60px rgba(60,180,210,0.20), 0 0 0 1px rgba(80,200,220,0.12)",
+            overflow: "hidden",
+            lineHeight: 0,
+          }}
+        >
+          <video
+            ref={reelRef}
+            id="reel-video"
+            controls
+            playsInline
+            style={{
+              display: "block",
+              maxWidth: "95vw",
+              maxHeight: "95vh",
+              objectFit: "contain",
+              borderRadius: "17px",
+            }}
+          >
+            <source src={reelVideo} type="video/mp4" />
+          </video>
+        </div>
+      </div>
+    )}
+    </>
   );
 }
 
@@ -695,19 +834,26 @@ function Luxury() {
   );
 }
 
-/* ── 7. GALLERY — asymmetric parallax ──────────────────────── */
+/* ── 7. GALLERY — editorial portrait + 2×2 grid ──────────────── */
 function Gallery() {
-  const shots = [
-    { src: bioImg, tag: "Bioluminescent Zone · 900 m", h: "row-span-2" },
-    { src: wreckImg, tag: "SS Meridian · 1240 m", h: "" },
-    { src: whaleVid, tag: "Humpback Passage · 60 m", h: "" },
-    { src: ctaAsset.url, tag: "Trench Approach · 6100 m", h: "row-span-2" },
-    { src: heroImg, tag: "Reef Threshold · 30 m", h: "" },
-  ];
   const ref = useReveal<HTMLDivElement>();
+
+  const portraits = [
+    { src: long1Img,  tag: "Bioluminescent Cascade · 900 m",  side: "left"  },
+    { src: long2Img,  tag: "Midnight Trench Wall · 4200 m",   side: "right" },
+  ];
+
+  const center = [
+    { src: gallery1Img, tag: "Reef Threshold · 30 m"        },
+    { src: gallery2Img, tag: "Humpback Passage · 60 m"       },
+    { src: gallery3Img, tag: "SS Meridian · 1240 m"          },
+    { src: gallery4Img, tag: "Trench Approach · 6100 m"      },
+  ];
+
   return (
     <section id="gallery" className="relative overflow-hidden py-40">
       <div ref={ref} className="reveal mx-auto max-w-[1500px] px-6 md:px-10">
+        {/* ── Header ── */}
         <div className="mb-16 flex items-end justify-between gap-8">
           <div>
             <p className="mb-4 text-[10px] uppercase tracking-[0.6em] text-primary/70">Chapter VII — Field Notes</p>
@@ -715,29 +861,112 @@ function Gallery() {
               What we've<br /><span className="italic text-primary">seen down there.</span>
             </h2>
           </div>
-          <a href="#book" className="hidden text-[10px] uppercase tracking-[0.35em] text-primary/70 hover:text-primary md:inline story-link">
+          <a
+            href="#book"
+            className="hidden text-[10px] uppercase tracking-[0.35em] text-primary/70 hover:text-primary md:inline story-link"
+          >
             Request full archive
           </a>
         </div>
 
-        <div className="grid auto-rows-[240px] grid-cols-2 gap-3 md:grid-cols-4">
-          {shots.map((s, i) => (
-            <figure
-              key={i}
-              className={`group relative overflow-hidden rounded-md border border-primary/15 ${s.h}`}
-            >
-              <img
-                src={s.src}
-                alt={s.tag}
-                className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-110"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-abyss via-abyss/20 to-transparent" />
-              <figcaption className="absolute bottom-4 left-4 text-[9px] uppercase tracking-[0.3em] text-foreground/80">
-                {s.tag}
-              </figcaption>
-            </figure>
-          ))}
+        {/* ── Editorial layout: portrait | 2×2 grid | portrait ── */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 2fr 1fr",
+            gap: "12px",
+            alignItems: "stretch",
+            height: "640px",
+          }}
+        >
+          {/* Left portrait */}
+          <figure
+            className="group relative overflow-hidden rounded-xl border border-primary/20"
+            style={{
+              boxShadow: "0 0 0 1px rgba(var(--color-primary-rgb, 100,180,210),0.08), 0 8px 40px rgba(0,0,0,0.55)",
+            }}
+          >
+            <img
+              src={long1Img}
+              alt={portraits[0].tag}
+              className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+              style={{ minHeight: "100%" }}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-abyss/90 via-abyss/25 to-transparent" />
+            <div
+              className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+              style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(var(--color-primary-rgb,100,180,210),0.12) 0%, transparent 70%)" }}
+            />
+            <figcaption className="absolute bottom-5 left-5 right-5">
+              <span className="block text-[9px] uppercase tracking-[0.4em] text-primary/80 transition-colors duration-300 group-hover:text-primary">
+                {portraits[0].tag}
+              </span>
+            </figcaption>
+          </figure>
+
+          {/* Center 2×2 grid */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gridTemplateRows: "1fr 1fr",
+              gap: "12px",
+            }}
+          >
+            {center.map((s, i) => (
+              <figure
+                key={i}
+                className="group relative overflow-hidden rounded-xl border border-primary/20"
+                style={{
+                  boxShadow: "0 0 0 1px rgba(var(--color-primary-rgb, 100,180,210),0.06), 0 6px 30px rgba(0,0,0,0.45)",
+                }}
+              >
+                <img
+                  src={s.src}
+                  alt={s.tag}
+                  className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-abyss/85 via-abyss/20 to-transparent" />
+                <div
+                  className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+                  style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(var(--color-primary-rgb,100,180,210),0.10) 0%, transparent 65%)" }}
+                />
+                <figcaption className="absolute bottom-4 left-4 right-4">
+                  <span className="block text-[9px] uppercase tracking-[0.4em] text-primary/80 transition-colors duration-300 group-hover:text-primary">
+                    {s.tag}
+                  </span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+
+          {/* Right portrait */}
+          <figure
+            className="group relative overflow-hidden rounded-xl border border-primary/20"
+            style={{
+              boxShadow: "0 0 0 1px rgba(var(--color-primary-rgb, 100,180,210),0.08), 0 8px 40px rgba(0,0,0,0.55)",
+            }}
+          >
+            <img
+              src={long2Img}
+              alt={portraits[1].tag}
+              className="h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+              style={{ minHeight: "100%" }}
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-abyss/90 via-abyss/25 to-transparent" />
+            <div
+              className="absolute inset-0 opacity-0 transition-opacity duration-700 group-hover:opacity-100"
+              style={{ background: "radial-gradient(ellipse at 50% 100%, rgba(var(--color-primary-rgb,100,180,210),0.12) 0%, transparent 70%)" }}
+            />
+            <figcaption className="absolute bottom-5 left-5 right-5">
+              <span className="block text-[9px] uppercase tracking-[0.4em] text-primary/80 transition-colors duration-300 group-hover:text-primary">
+                {portraits[1].tag}
+              </span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
