@@ -11,6 +11,7 @@ import { LenisProvider } from "@/components/LenisProvider";
 import { FlashlightCursor } from "@/components/FlashlightCursor";
 import { ScrollHUD } from "@/components/ScrollHUD";
 import { AmbientAudio } from "@/components/AmbientAudio";
+import { AudioProvider, useAudio } from "@/components/AudioProvider";
 import { Preloader } from "@/components/Preloader";
 import { Bubbles } from "@/components/Bubbles";
 import { Particles } from "@/components/Particles";
@@ -53,27 +54,31 @@ export const Route = createFileRoute("/")({
   component: Page,
 });
 
-function Page() {
+export function Page() {
   return (
     <LenisProvider>
-      <Preloader />
-      <FlashlightCursor />
-      <ScrollHUD />
-      <AmbientAudio />
-      <Nav />
-      <main id="top" className="relative overflow-hidden bg-abyss text-foreground">
-        <Mystery />
-        <Hero />
-        <Discovery />
-        <Exploration />
-        <Technology />
-        <Luxury />
-        <Gallery />
-        <Testimonial />
-        <FAQ />
-        <Booking />
-      </main>
-      <SiteFooter />
+      <AudioProvider>
+        <div className="bg-black text-foreground antialiased selection:bg-primary/30 selection:text-primary">
+          <Preloader />
+          <FlashlightCursor />
+          <ScrollHUD />
+          <AmbientAudio />
+          <Nav />
+          <main id="top" className="relative overflow-hidden bg-abyss text-foreground">
+            <Mystery />
+            <Hero />
+            <Discovery />
+            <Exploration />
+            <Technology />
+            <Luxury />
+            <Gallery />
+            <Testimonial />
+            <FAQ />
+            <Booking />
+            <SiteFooter />
+          </main>
+        </div>
+      </AudioProvider>
     </LenisProvider>
   );
 }
@@ -181,6 +186,7 @@ function Mystery() {
 
 /* ── 2. HERO ───────────────────────────────────────────────── */
 function Hero() {
+  const { pauseForReel, resumeFromReel } = useAudio();
   const [scrollY, setScrollY] = useState(0);
   const [reelOpen, setReelOpen] = useState(false);
   const [reelVisible, setReelVisible] = useState(false); // drives CSS transition
@@ -232,28 +238,23 @@ function Hero() {
   /* ── Reel modal open/close ── */
   const openReel = () => {
     setReelOpen(true);
-    // Lock scroll
     document.body.style.overflow = "hidden";
-    // Pause background hero video
     videoRef.current?.pause();
-    // Trigger entrance transition on next frame
+    pauseForReel();
     requestAnimationFrame(() => requestAnimationFrame(() => setReelVisible(true)));
   };
 
   const closeReel = () => {
     setReelVisible(false);
-    // Wait for fade-out transition before unmounting
     setTimeout(() => {
       setReelOpen(false);
-      // Pause & reset reel
       if (reelRef.current) {
         reelRef.current.pause();
         reelRef.current.currentTime = 0;
       }
-      // Restore scroll
       document.body.style.overflow = "";
-      // Resume background video
       videoRef.current?.play();
+      resumeFromReel();
     }, 350);
   };
 
@@ -557,7 +558,7 @@ function Technology() {
             </h2>
           </div>
           <p className="hidden max-w-xs text-sm text-foreground/70 md:block">
-            Built with aerospace tolerances, tuned like a Steinway. Move your cursor to inspect.
+            Built with aerospace tolerances, tuned like a Steinway.
           </p>
         </div>
 
