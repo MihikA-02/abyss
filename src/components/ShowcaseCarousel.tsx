@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-import interiorAsset from "@/assets/interior.png.asset.json";
+import mothershipImg from "@/assets/The Mothership.png";
 import yachtAsset from "@/assets/yacht.png.asset.json";
 import wreckImg from "@/assets/wreck.jpg";
 import { Bubbles } from "@/components/Bubbles";
-
+import cockpitImg from "@/assets/cockpit.png";
 type Slide = {
   src: string;
   eyebrow: string;
@@ -16,14 +15,14 @@ type Slide = {
 
 const SLIDES: Slide[] = [
   {
-    src: yachtAsset.url,
+    src: mothershipImg,
     eyebrow: "Surface — 0 m",
     title: "The Mothership",
     copy: "A 78-metre expedition yacht cradles the Explorer X1 between dives — six suites, a marine lab, and a horizon-facing lounge.",
     buoyancy: true,
   },
   {
-    src: interiorAsset.url,
+    src: cockpitImg,
     eyebrow: "Interior — Titanium Shell",
     title: "The Cockpit",
     copy: "Concert-hall acoustics, hand-stitched leather, and a wraparound instrument arc that keeps every reading a glance away.",

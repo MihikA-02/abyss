@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import {
   ArrowRight, Play, Menu, X, Compass, Users, Clock, Camera, Shield, Waves, Leaf,
-  Plus, Minus, Ship, Fish, Anchor, Gem, Radar, ChevronDown,
+  Plus, Minus, Ship, Fish, Anchor, Gem, Radar, ChevronDown, Check,
 } from "lucide-react";
 
 import { LenisProvider } from "@/components/LenisProvider";
@@ -16,9 +16,9 @@ import { Bubbles } from "@/components/Bubbles";
 import { Particles } from "@/components/Particles";
 import { CountUp } from "@/components/CountUp";
 import { ShowcaseCarousel } from "@/components/ShowcaseCarousel";
-
+import jellyfishVid from "@/assets/jellyfish.mp4";
 import heroImg from "@/assets/hero.jpg";
-import whaleImg from "@/assets/whale.jpg";
+import whaleVid from "@/assets/whale.mp4";
 import bioImg from "@/assets/bioluminescent.jpg";
 import wreckImg from "@/assets/wreck.jpg";
 import explorerX1 from "@/assets/explorer-x1.png";
@@ -297,7 +297,13 @@ function Discovery() {
   ];
   const ref = useReveal<HTMLDivElement>();
   return (
-    <section className="relative overflow-hidden py-40">
+    <section
+      className="relative overflow-hidden py-40"
+      style={{
+        background:
+          "linear-gradient(180deg, #02060D 0%, #071A27 30%, #0A2233 55%, #071A27 75%, #02060D 100%)",
+      }}
+    >
       <Particles count={18} />
       <div ref={ref} className="reveal relative z-10 mx-auto max-w-[1500px] px-6 md:px-10">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr]">
@@ -348,13 +354,15 @@ function Exploration() {
 
   return (
     <section id="exploration" ref={ref} className="relative min-h-[130vh] overflow-hidden">
-      <img
-        src={whaleImg}
-        alt="A humpback whale drifting under volumetric surface light"
+      <video
         className="absolute inset-0 h-full w-full object-cover"
-        style={{ transform: `scale(${1 + scrollY * 0.15}) translateY(${scrollY * -40}px)` }}
-        loading="lazy"
-      />
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source src={whaleVid} type="video/mp4" />
+      </video>
       <div className="absolute inset-0 bg-gradient-to-b from-abyss/40 via-transparent to-abyss" />
       <Bubbles count={25} />
 
@@ -447,51 +455,240 @@ function Technology() {
 }
 
 /* ── 6. LUXURY — chained glass expeditions ─────────────────── */
+const EXPERIENCES = [
+  {
+    id: "signature",
+    icon: Ship,
+    title: "Signature Expedition",
+    subtitle: "Three-day cinematic voyage across trench, reef and wreck.",
+    description: "Experience the ultimate deep-sea adventure. A comprehensive journey through diverse underwater ecosystems, from bioluminescent gardens to historic abyssal plains.",
+    duration: "3 Days",
+    guests: "Up to 6",
+    depth: "4,500 m",
+    difficulty: "Beginner Friendly",
+    includes: ["Luxury Ocean Suite", "Gourmet Dining", "Marine Biologist Guide", "Underwater Photography", "Two Deep Dives", "Private Transfers"],
+    price: "$14,999 / Person",
+    buttonText: "Reserve Expedition"
+  },
+  {
+    id: "marine",
+    icon: Fish,
+    title: "Marine Encounters",
+    subtitle: "Chartered dives synchronised with seasonal migrations.",
+    description: "Witness the ocean's most magnificent creatures in their natural habitat. Carefully timed with marine life migrations for unparalleled observation opportunities.",
+    duration: "2 Days",
+    guests: "Up to 8",
+    depth: "1,200 m",
+    difficulty: "Easy",
+    includes: ["Guided Wildlife Excursions", "Professional Photography", "Marine Naturalist", "Luxury Cabin Stay", "Fine Dining Experience", "Snorkeling Equipment"],
+    price: "$8,999 / Person",
+    buttonText: "Book Experience"
+  },
+  {
+    id: "wreck",
+    icon: Anchor,
+    title: "Wreck Archaeology",
+    subtitle: "Descend to lost hulls with resident maritime historians.",
+    description: "Explore sunken history. Dive deep to investigate historical wrecks with expert archaeologists who bring the forgotten past vividly to life.",
+    duration: "4 Days",
+    guests: "Up to 4",
+    depth: "3,800 m",
+    difficulty: "Intermediate",
+    includes: ["Historic Wreck Expeditions", "Maritime Archaeologist", "Deep Dive Equipment", "Research Briefings", "Luxury Accommodation", "Expedition Documentary"],
+    price: "$16,499 / Person",
+    buttonText: "Reserve Dive"
+  },
+  {
+    id: "charter",
+    icon: Gem,
+    title: "Private Charter",
+    subtitle: "The Explorer X1 and her crew reserved solely for your party.",
+    description: "The ultimate bespoke deep-sea experience. Complete freedom to chart your own course into the abyss, with our world-class team entirely at your disposal.",
+    duration: "Flexible (1–7 Days)",
+    guests: "Up to 6",
+    depth: "4,500 m",
+    difficulty: "Custom Experience",
+    includes: ["Exclusive Explorer X1 Charter", "Dedicated Captain & Crew", "Personalized Itinerary", "Private Chef", "Luxury Suites", "VIP Concierge Service"],
+    price: "$54,000 / Charter",
+    buttonText: "Request Charter"
+  },
+  {
+    id: "science",
+    icon: Radar,
+    title: "Science Missions",
+    subtitle: "Contribute to real research alongside our biologists.",
+    description: "Join active marine research. Gather critical data, deploy scientific instruments, and explore uncharted territories with leading marine scientists.",
+    duration: "5 Days",
+    guests: "Up to 5",
+    depth: "4,000 m",
+    difficulty: "Moderate",
+    includes: ["Research Participation", "Ocean Sampling Activities", "Marine Scientist Mentorship", "Expedition Certification", "Premium Accommodation", "Daily Scientific Briefings"],
+    price: "$9,999 / Person",
+    buttonText: "Join Mission"
+  },
+  {
+    id: "cinematic",
+    icon: Camera,
+    title: "Cinematic Studio",
+    subtitle: "8K deep-water film and photography with an on-board team.",
+    description: "Capture the deep ocean in unprecedented fidelity. Built for professional filmmakers, documentarians, and those who demand the highest quality visual record.",
+    duration: "3 Days",
+    guests: "Up to 6",
+    depth: "2,500 m",
+    difficulty: "Easy",
+    includes: ["8K Underwater Filming", "Professional Camera Crew", "Drone & ROV Footage", "Cinematic Color Grading", "Behind-the-Scenes Coverage", "Edited Highlight Film"],
+    price: "$22,000 / Project",
+    buttonText: "Book Production"
+  }
+];
+
 function Luxury() {
-  const items = [
-    { icon: Ship, title: "Signature Expedition", copy: "Three-day cinematic voyage across trench, reef and wreck." },
-    { icon: Fish, title: "Marine Encounters", copy: "Chartered dives synchronised with seasonal migrations." },
-    { icon: Anchor, title: "Wreck Archaeology", copy: "Descend to lost hulls with resident maritime historians." },
-    { icon: Gem, title: "Private Charter", copy: "The Explorer X1 and her crew reserved solely for your party." },
-    { icon: Radar, title: "Science Missions", copy: "Contribute to real research alongside our biologists." },
-    { icon: Camera, title: "Cinematic Studio", copy: "8K deep-water film and photography with an on-board team." },
-  ];
+  const [activeExp, setActiveExp] = useState<typeof EXPERIENCES[0] | null>(null);
   const ref = useReveal<HTMLDivElement>();
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setActiveExp(null);
+    };
+    if (activeExp) {
+      window.addEventListener('keydown', handleEsc);
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+      document.body.style.overflow = '';
+    };
+  }, [activeExp]);
+
   return (
-    <section id="luxury" className="relative overflow-hidden py-40">
-      <img src={yachtAsset.url} alt="" className="absolute inset-0 h-full w-full object-cover opacity-40" loading="lazy" aria-hidden />
-      <div className="absolute inset-0 bg-gradient-to-b from-abyss via-abyss/70 to-abyss" />
-      <Bubbles count={20} />
+    <section id="luxury" className="relative py-40">
+      <img src={yachtAsset.url} alt="" className={`absolute inset-0 h-full w-full object-cover opacity-40 transition-all duration-500 ${activeExp ? 'blur-sm brightness-50' : ''}`} loading="lazy" aria-hidden />
+      <div className={`absolute inset-0 bg-gradient-to-b from-abyss via-abyss/70 to-abyss transition-all duration-500 ${activeExp ? 'opacity-80' : 'opacity-100'}`} />
 
-      <div ref={ref} className="reveal relative z-10 mx-auto max-w-[1500px] px-6 md:px-10">
-        <div className="mb-20 max-w-2xl">
-          <p className="mb-4 text-[10px] uppercase tracking-[0.6em] text-primary/70">Chapter VI — Luxury</p>
-          <h2 className="font-display text-5xl leading-[1.05] md:text-7xl">
-            Six ways to<br /><span className="italic text-primary">disappear</span> below.
-          </h2>
+      {/* Background container that blurs and darkens when modal is open */}
+      <div className={`relative w-full h-full transition-all duration-500 ${activeExp ? 'blur-[8px] brightness-50' : ''}`}>
+        <Bubbles count={20} />
+
+        <div ref={ref} className="reveal relative z-10 mx-auto max-w-[1500px] px-6 md:px-10">
+          <div className="mb-20 max-w-2xl">
+            <p className="mb-4 text-[10px] uppercase tracking-[0.6em] text-primary/70">Chapter VI — Luxury</p>
+            <h2 className="font-display text-5xl leading-[1.05] md:text-7xl">
+              Six ways to<br /><span className="italic text-primary">disappear</span> below.
+            </h2>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {EXPERIENCES.map((it, i) => {
+              const I = it.icon;
+              return (
+                <article
+                  key={it.title}
+                  onClick={() => setActiveExp(it)}
+                  className="glass-card float-sway group relative rounded-md p-8 cursor-pointer transition-all hover:bg-white/5 active:scale-[0.98]"
+                  style={{ animationDelay: `${i * 0.35}s`, animationDuration: `${7 + (i % 3)}s` }}
+                >
+                  <span className="mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-primary/5 transition-colors group-hover:bg-primary/15">
+                    <I className="h-5 w-5 text-primary" strokeWidth={1.3} />
+                  </span>
+                  <h3 className="font-display text-2xl leading-tight">{it.title}</h3>
+                  <p className="mt-4 text-sm leading-relaxed text-foreground/70">{it.subtitle}</p>
+                  <div className="mt-8 flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-primary/60">
+                    <span>0{i + 1} / 06</span>
+                    <ArrowRight className="h-4 w-4 transition-transform group-hover:rotate-45 group-active:rotate-90" />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
         </div>
+      </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {items.map((it, i) => {
-            const I = it.icon;
-            return (
-              <article
-                key={it.title}
-                className="glass-card float-sway group relative rounded-md p-8"
-                style={{ animationDelay: `${i * 0.35}s`, animationDuration: `${7 + (i % 3)}s` }}
-              >
-                <span className="mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-primary/40 bg-primary/5 transition-colors group-hover:bg-primary/15">
-                  <I className="h-5 w-5 text-primary" strokeWidth={1.3} />
-                </span>
-                <h3 className="font-display text-2xl leading-tight">{it.title}</h3>
-                <p className="mt-4 text-sm leading-relaxed text-foreground/70">{it.copy}</p>
-                <div className="mt-8 flex items-center justify-between text-[10px] uppercase tracking-[0.3em] text-primary/60">
-                  <span>0{i + 1} / 06</span>
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      {/* Modal Overlay */}
+      <div
+        className={`fixed inset-0 z-[2000] flex items-center justify-center p-4 transition-all duration-500 ${activeExp ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
+        onClick={() => setActiveExp(null)}
+      >
+        <div className={`absolute inset-0 bg-black/40 backdrop-blur-md transition-opacity duration-500 ${activeExp ? 'opacity-100' : 'opacity-0'}`} />
+
+        {/* Modal Content */}
+        <div
+          className={`relative w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-[24px] border border-cyan-400/30 bg-abyss/80 p-8 md:p-12 shadow-[0_0_50px_rgba(34,211,238,0.15)] backdrop-blur-xl transition-all duration-500 md:rounded-[32px] ${activeExp ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+            }`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => setActiveExp(null)}
+            className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-foreground/70 transition-all hover:bg-white/10 hover:text-white"
+            aria-label="Close modal"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
+          {activeExp && (
+            <div className="flex flex-col gap-8">
+              <div className="max-w-xl pr-12">
+                <h3 className="font-display text-4xl text-white md:text-5xl">{activeExp.title}</h3>
+                <p className="mt-3 text-lg text-primary/90">{activeExp.subtitle}</p>
+                <p className="mt-4 text-sm leading-relaxed text-foreground/70">{activeExp.description}</p>
+              </div>
+
+              <div className="h-[1px] w-full bg-primary/20" />
+
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-primary/60">Duration</span>
+                  <span className="font-display text-xl text-white">{activeExp.duration}</span>
                 </div>
-              </article>
-            );
-          })}
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-primary/60">Guests</span>
+                  <span className="font-display text-xl text-white">{activeExp.guests}</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-primary/60">Max Depth</span>
+                  <span className="font-display text-xl text-white">{activeExp.depth}</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-primary/60">Difficulty</span>
+                  <span className="font-display text-xl text-white">{activeExp.difficulty}</span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <span className="text-[10px] uppercase tracking-[0.3em] text-primary/60">Included</span>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {activeExp.includes.map((item, idx) => (
+                    <div key={idx} className="flex items-center gap-3 text-sm text-foreground/80">
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary/10">
+                        <Check className="h-3 w-3 text-primary" />
+                      </div>
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="h-[1px] w-full bg-primary/20" />
+
+              <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] uppercase tracking-[0.3em] text-primary/60">Starting From</span>
+                  <span className="font-display text-3xl text-white">{activeExp.price}</span>
+                </div>
+
+                <a
+                  href="#book"
+                  onClick={() => setActiveExp(null)}
+                  className="btn-outline-glow group flex items-center gap-4 rounded-full bg-primary/10 px-8 py-4 text-[10px] uppercase tracking-[0.35em] text-white transition-all hover:bg-primary/20 hover:shadow-[0_0_20px_rgba(34,211,238,0.4)]"
+                >
+                  {activeExp.buttonText}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                </a>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -503,7 +700,7 @@ function Gallery() {
   const shots = [
     { src: bioImg, tag: "Bioluminescent Zone · 900 m", h: "row-span-2" },
     { src: wreckImg, tag: "SS Meridian · 1240 m", h: "" },
-    { src: whaleImg, tag: "Humpback Passage · 60 m", h: "" },
+    { src: whaleVid, tag: "Humpback Passage · 60 m", h: "" },
     { src: ctaAsset.url, tag: "Trench Approach · 6100 m", h: "row-span-2" },
     { src: heroImg, tag: "Reef Threshold · 30 m", h: "" },
   ];
@@ -552,8 +749,23 @@ function Testimonial() {
   const ref = useReveal<HTMLQuoteElement>();
   return (
     <section className="relative overflow-hidden py-40">
+      {/* Background Video */}
+      <video
+        className="absolute inset-0 z-0 h-full w-full object-cover opacity-45"
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source src={jellyfishVid} type="video/mp4" />
+      </video>
+
+      {/* Dark Overlay */}
+      <div className="absolute inset-0 z-[1] bg-black/55" />
+
       <Bubbles count={12} />
-      <blockquote ref={ref} className="reveal relative z-10 mx-auto max-w-4xl px-6 text-center md:px-10">
+      <Bubbles count={12} />
+      <blockquote ref={ref} className="reveal relative z-20 mx-auto max-w-4xl px-6 text-center md:px-10">
         <span className="font-display text-6xl leading-none text-primary">“</span>
         <p className="mt-6 font-display text-3xl leading-[1.3] text-foreground md:text-4xl">
           Nothing above the waterline prepares you for what waits below. ABYSS didn't show us the ocean —
