@@ -1,4 +1,3 @@
-import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -34,27 +33,7 @@ import gallery4Img from "@/assets/gallery4.jpeg";
 import long1Img from "@/assets/long1.jpeg";
 import long2Img from "@/assets/long2.jpeg";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "ABYSS: Cinematic Deep-Sea Expeditions" },
-      {
-        name: "description",
-        content:
-          "ABYSS operates private submarine expeditions into the world's deepest waters. Descend 10,994 meters aboard the Explorer X1 — luxury, science, and mystery in one journey.",
-      },
-      { property: "og:title", content: "ABYSS - Cinematic Deep-Sea Expeditions" },
-      { property: "og:description", content: "Descend into the unknown. Private submarine expeditions to 10,994 meters." },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-  }),
-  component: Page,
-});
-
-export function Page() {
+export function HomePage() {
   return (
     <LenisProvider>
       <AudioProvider>
@@ -1001,7 +980,7 @@ function Testimonial() {
       <Bubbles count={12} />
       <Bubbles count={12} />
       <blockquote ref={ref} className="reveal relative z-20 mx-auto max-w-4xl px-6 text-center md:px-10">
-        <span className="font-display text-6xl leading-none text-primary">“</span>
+        <span className="font-display text-6xl leading-none text-primary">"</span>
         <p className="mt-6 font-display text-3xl leading-[1.3] text-foreground md:text-4xl">
           Nothing above the waterline prepares you for what waits below. ABYSS didn't show us the ocean —
           it introduced us to it.
@@ -1118,7 +1097,7 @@ function Booking() {
                 <Field label="Email" name="email" type="email" required />
                 <div className="grid grid-cols-2 gap-4">
                   <Field label="Party size" name="party" type="number" defaultValue="2" />
-                  <Select label="Expedition" name="exp" options={["Signature", "Private charter", "Science mission", "Wreck archaeology"]} />
+                  <SelectField label="Expedition" name="exp" options={["Signature", "Private charter", "Science mission", "Wreck archaeology"]} />
                 </div>
                 <Field label="Preferred window" name="window" placeholder="e.g. Autumn 2027" />
               </div>
@@ -1150,7 +1129,7 @@ function Field({ label, name, type = "text", ...rest }: React.InputHTMLAttribute
     </label>
   );
 }
-function Select({ label, name, options }: { label: string; name: string; options: string[] }) {
+function SelectField({ label, name, options }: { label: string; name: string; options: string[] }) {
   return (
     <label className="block">
       <span className="mb-2 block text-[9px] uppercase tracking-[0.4em] text-foreground/60">{label}</span>
@@ -1268,3 +1247,9 @@ function FooterCol({ title, items }: { title: string; items: { label: string; hr
     </div>
   );
 }
+
+// Suppress unused import warnings for assets only used via import (tree-shaking safe)
+void heroImg;
+void bioImg;
+void interiorAsset;
+void ctaAsset;
